@@ -1,0 +1,71 @@
+import { pool } from "./dbsettings.mjs";
+import { studentSchema } from "./validations.mjs";
+
+/*CLASE PARA GESTIONAR OPERACIONES CRUD SOBRE ESTUDIANTES */
+export class StudentsModel {
+  /*RECUPERAR TODOS LOS ESTUDIANTES */
+  static async getAll() {
+    const [result] = await pool.query("SELECT * FROM students");
+    return result;
+  }
+
+  /*RECUPERAR UN ESTUDIANTE ESPECIFICO POR ID */
+  static async getStudentById(id) {
+    const [result] = await pool.query(
+      "SELECT * FROM students WHERE StudentID = ?",
+      [id],
+    );
+    if (result.length === 0) return null;
+    return result;
+  }
+
+  /*CREAR UN NUEVO ESTUDIANTE */
+  static async createStudent(student) {
+    try {
+      const validData = studentSchema.parse(student);
+      const { FirstName, LastName, Age, Sex, Phone, Residence } = validData;
+      const [result] = await pool.query(
+        "INSERT  INTO students(FirstName, LastName, Age, Sex, Phone, Residence) VALUES (?,?,?,?,?,?)",
+        [FirstName, LastName, Age, Sex, Phone, Residence],
+      );
+      const data = { id: result.insertId, ...student };
+      return data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  /*ACTUALIZAR UN ESTUDIANTE ESPECIFICO*/
+  static async updateStudent(id, input) {
+    const body = input;
+    const campos = Object.keys(input);
+    const camposPermitidos = [
+      "FirsTName",
+      "LastName",
+      "Age",
+      "Sex",
+      "Residence",
+      "Phone",
+    ];
+
+    const camposValidos = campos.filter((campo) =>
+      camposPermitidos.includes(campo),
+    );
+
+    const valores = camposValidos.map((campo) => body[campo]);
+
+    const sets = camposValidos.map((campo) => `${campo} = ?`).join(", ");
+    const sql = `UPDATE students set ${sets} WHERE StudentID = ?`;
+    const [result] = await pool.query(sql, [...valores, id]);
+    return result.affectedRows;
+  }
+
+  /*ELIMINAR UN ESTUDIANTE ESPECIFICO */
+  static async deleteStudent(id) {
+    const [result] = await pool.query(
+      "DELETE FROM students WHERE StudentID = ?",
+      [id],
+    );
+    return result.affectedRows;
+  }
+}
