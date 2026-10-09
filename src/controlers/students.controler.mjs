@@ -4,7 +4,6 @@ export class SudentsController {
   static async getAllStudents(req, res) {
     try {
       const result = await StudentsModel.getAll();
-      console.log("se ha hecho get a estudiantes");
       res.status(200).json(result);
     } catch (error) {
       res.status(500).json({
@@ -19,7 +18,7 @@ export class SudentsController {
       const student = await StudentsModel.getStudentById(id);
       if (!student) {
         res
-          .status(400)
+          .status(404)
           .json({ err: `no existe un estudiante con el id ${id}` });
         return;
       }

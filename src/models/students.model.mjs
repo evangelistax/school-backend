@@ -1,5 +1,6 @@
+import { parse } from "node:path";
 import { pool } from "./dbsettings.mjs";
-import { studentSchema } from "./validations.mjs";
+import { studentSchema, partialStudent } from "./validations.mjs";
 
 /*CLASE PARA GESTIONAR OPERACIONES CRUD SOBRE ESTUDIANTES */
 export class StudentsModel {
@@ -37,10 +38,11 @@ export class StudentsModel {
 
   /*ACTUALIZAR UN ESTUDIANTE ESPECIFICO*/
   static async updateStudent(id, input) {
+    const validInput = partialStudent.parse(input);
     const body = input;
-    const campos = Object.keys(input);
+    const campos = Object.keys(validInput);
     const camposPermitidos = [
-      "FirsTName",
+      "FirstName",
       "LastName",
       "Age",
       "Sex",

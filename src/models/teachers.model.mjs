@@ -22,6 +22,7 @@ export class TeachersModel {
 
   /*CREAR UN NUEVO PROFESOR */
   static async createProfessor(teacher) {
+    const validData = teacherSchema.parse(teacher);
     const {
       FirstName,
       LastName,
@@ -31,7 +32,7 @@ export class TeachersModel {
       Residence,
       Titulation,
       Age,
-    } = teacher;
+    } = validData;
     const [result] = await pool.query(
       "INSERT  INTO professors(FirstName, LastName, Age, Sex, Phone, Residence, Titulation, Salary ) VALUES (?,?,?,?,?,?,?,?)",
       [FirstName, LastName, Age, Sex, Phone, Residence, Titulation, Salary],

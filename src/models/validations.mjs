@@ -9,6 +9,8 @@ export const studentSchema = z.object({
   Residence: z.string(),
 });
 
+export const partialStudent = studentSchema.partial();
+
 export const teacherSchema = z.object({
   FirstName: z.string(),
   LastName: z.string(),
@@ -19,3 +21,5 @@ export const teacherSchema = z.object({
   Phone: z.string().min(9).max(9),
   Residence: z.string(),
 });
+
+export const partialTeacher = teacherSchema.partial();
