@@ -34,12 +34,10 @@ export class SudentsController {
     try {
       const student = req.body;
       const result = await StudentsModel.createStudent(student);
-      res
-        .status(201)
-        .json({ message: "estudiante creado correctamente", ...result });
+      res.status(201).json({ message: "usuario creado con exito" });
     } catch (error) {
       res.status(400).json({
-        error: `Hubo un error al procesar los datos ${error.message}`,
+        message: `Hubo un error al procesar los datos ${error.message}`,
       });
     }
   }
