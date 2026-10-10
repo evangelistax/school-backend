@@ -75,7 +75,9 @@ export class SudentsController {
       const id = Number(req.params.id);
       const result = await StudentsModel.deleteStudent(id);
       if (!result) {
-        res.status(404).json({ err: `no hay un estudiante con el id ${id}` });
+        res
+          .status(404)
+          .json({ message: `no hay un estudiante con el id ${id}` });
         return;
       }
       res.status(200).json({ message: "estudiante eliminado correctamente" });
