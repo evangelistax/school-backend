@@ -6,8 +6,12 @@ import { studentSchema, partialStudent } from "./validations.mjs";
 export class StudentsModel {
   /*RECUPERAR TODOS LOS ESTUDIANTES */
   static async getAll() {
-    const [result] = await pool.query("SELECT * FROM students");
-    return result;
+    try {
+      const [result] = await pool.query("SELECT * FROM students");
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   /*RECUPERAR UN ESTUDIANTE ESPECIFICO POR ID */
@@ -32,7 +36,7 @@ export class StudentsModel {
       const data = { id: result.insertId, ...student };
       return data;
     } catch (error) {
-      throw new Error(error);
+      throw new Error(error.message);
     }
   }
 

@@ -8,7 +8,7 @@ export class TeachersController {
       res.status(200).json(result);
     } catch (error) {
       res.status(500).json({
-        message: `se produjo un error al lerr los datos: ${error.message}`,
+        message: `se produjo un error al leer los datos`,
       });
     }
   }

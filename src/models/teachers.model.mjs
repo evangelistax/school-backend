@@ -6,8 +6,12 @@ import { teacherSchema } from "./validations.mjs";
 export class TeachersModel {
   /*RECUPERAR TODOS LOS PROFESORES */
   static async getAllTeachers() {
-    const [result] = await pool.query("SELECT * FROM professors");
-    return result;
+    try {
+      const [result] = await pool.query("SELECT * FROM professors");
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   /*RECUPERAR UN PROFESOR ESPECIFICO POR ID */
