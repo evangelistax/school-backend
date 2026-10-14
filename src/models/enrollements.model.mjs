@@ -4,11 +4,11 @@ import { enrollementSchrema } from "./validations.mjs";
 export async function getEnrollemtns() {
   try {
     const [result] = await pool.query(
-      "SELECT Amount, Debit, Paid, DateOf, Observations, TypeOf, StudentID, FirstName, LastName FROM enrollements INNER JOIN students ON enrollement.StudentID = students.StudentID",
+      "SELECT e.Amount, e.Debit, e.Paid, e.DateOf, e.Observations, e.TypeOf, e.StudentID, s.FirstName, s.LastName FROM enrollements AS e INNER JOIN students AS s ON e.StudentID = s.StudentID",
     );
     return result;
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }
 

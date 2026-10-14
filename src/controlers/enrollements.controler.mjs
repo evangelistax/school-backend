@@ -4,6 +4,6 @@ export default async function enrollementsController(req, res) {
     const data = await getEnrollemtns();
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ message: "hubo un error al leer los datos" });
+    res.status(500).json({ message: error.message });
   }
 }
