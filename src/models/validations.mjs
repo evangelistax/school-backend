@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 export const studentSchema = z.object({
   FirstName: z.string(),
   LastName: z.string(),
@@ -24,9 +25,15 @@ export const teacherSchema = z.object({
 export const partialTeacher = teacherSchema.partial();
 
 export const enrollementSchrema = z.object({
+  FirstName: z.string(),
+  LastName: z.string(),
+  Age: z.number().positive().max(20, "revise la edad"),
+  Sex: z.string().min(1).max(1),
+  Phone: z.string().min(9).max(9),
+  Residence: z.string(),
   Amount: z.number().positive(),
   Paid: z.number().positive(),
-  DateOF: z.string(),
+  DateOf: z.string(),
   Observations: z.string(),
   TypeOf: z.string(),
 });
