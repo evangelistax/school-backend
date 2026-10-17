@@ -11,11 +11,11 @@ export async function getEnrollments(params) {
     "SELECT e.Amount, e.Debit, e.Paid, e.DateOf, e.Observations, e.TypeOf, e.StudentID, s.FirstName, s.LastName FROM enrollements AS e INNER JOIN students AS s ON e.StudentID = s.StudentID ";
   if (course) {
     p.push(course);
-    s.push(`CourseName = ?`);
+    s.push(` CourseName = ? `);
   }
   if (type) {
     p.push(type);
-    s.push(`TypeOf = ?`);
+    s.push(` TypeOf = ?`);
   }
 
   if (p.length > 0) {
