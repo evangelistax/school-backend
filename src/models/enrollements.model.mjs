@@ -3,12 +3,12 @@ import { enrollementSchrema } from "./validations.mjs";
 
 // 1. Corregido el nombre de la función a 'getEnrollments'
 export async function getEnrollments(params) {
-  const { course, type } = params;
+  const { course, type, name } = params;
   const p = [];
   const s = [];
 
   let sql =
-    "SELECT e.Amount, e.Debit, e.Paid, e.DateOf, e.Observations, e.TypeOf, e.StudentID, s.FirstName, s.LastName FROM enrollements AS e INNER JOIN students AS s ON e.StudentID = s.StudentID ";
+    "SELECT e.Amount, e.Debit, e.Paid, e.DateOf, e.Observations, e.TypeOf, e.StudentID, s.FirstName, s.LastName, c.CourseName FROM enrollements AS e INNER JOIN students AS s ON e.StudentID = s.StudentID INNER JOIN courses as c ON e.CourseID = c.CourseID ";
   if (course) {
     p.push(course);
     s.push(` CourseName = ? `);
@@ -16,6 +16,12 @@ export async function getEnrollments(params) {
   if (type) {
     p.push(type);
     s.push(` TypeOf = ?`);
+  }
+
+  if (name) {
+    const newName = `%${name}%`;
+    p.push(newName);
+    s.push(" FirstName LIKE ?");
   }
 
   if (p.length > 0) {
@@ -45,6 +51,7 @@ export async function createEnrollment(data) {
       Residence,
       Amount,
       Paid,
+      CourseID,
       Observations,
       DateOf,
       TypeOf,
@@ -66,8 +73,8 @@ export async function createEnrollment(data) {
 
     // IMPORTANTE: Usar la misma 'connection' de la transacción, NO el 'pool'
     await connection.query(
-      `INSERT INTO enrollements (StudentID, Amount, Paid, Observations, DateOf, TypeOf, Debit) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [StudentID, Amount, Paid, Observations, DateOf, TypeOf, Debit],
+      `INSERT INTO enrollements (StudentID, CourseID, Amount, Paid, Observations, DateOf, TypeOf, Debit) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [StudentID, CourseID, Amount, Paid, Observations, DateOf, TypeOf, Debit],
     );
 
     // Confirmar cambios

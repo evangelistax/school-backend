@@ -4,10 +4,10 @@ import {
 } from "../models/enrollements.model.mjs";
 
 export async function get(req, res) {
-  const { course, type } = req.query;
+  const { course, type, name } = req.query;
 
   try {
-    const data = await getEnrollments({ course, type });
+    const data = await getEnrollments({ course, type, name });
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });

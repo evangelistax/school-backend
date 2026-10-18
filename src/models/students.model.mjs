@@ -5,9 +5,16 @@ import { studentSchema, partialStudent } from "./validations.mjs";
 /*CLASE PARA GESTIONAR OPERACIONES CRUD SOBRE ESTUDIANTES */
 export class StudentsModel {
   /*RECUPERAR TODOS LOS ESTUDIANTES */
-  static async getAll() {
+  static async getAll(params) {
+    const { name } = params;
+    let sql = "SELECT * FROM students ";
+    let newName = "";
+    if (name) {
+      newName = `%${name}%`;
+      sql += " WHERE FirstName LIKE ?";
+    }
     try {
-      const [result] = await pool.query("SELECT * FROM students");
+      const [result] = await pool.query(sql, newName);
       return result;
     } catch (error) {
       throw new Error(error);

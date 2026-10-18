@@ -2,12 +2,13 @@ import { StudentsModel } from "../models/students.model.mjs";
 
 export class SudentsController {
   static async getAllStudents(req, res) {
+    const { name } = req.query;
     try {
-      const result = await StudentsModel.getAll();
+      const result = await StudentsModel.getAll({ name });
       res.status(200).json(result);
     } catch (error) {
       res.status(500).json({
-        message: `se produjo un error al leer los datos`,
+        message: `se produjo un error al leer los datos ${error.message}`,
       });
     }
   }

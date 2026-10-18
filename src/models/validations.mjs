@@ -33,6 +33,7 @@ export const enrollementSchrema = z.object({
   Residence: z.string(),
   Amount: z.number().positive(),
   Paid: z.number().positive(),
+  CourseID: z.number().positive(),
   DateOf: z.string(),
   Observations: z.string(),
   TypeOf: z.string(),
