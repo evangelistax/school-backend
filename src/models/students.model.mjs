@@ -24,7 +24,7 @@ export class StudentsModel {
   /*RECUPERAR UN ESTUDIANTE ESPECIFICO POR ID */
   static async getStudentById(id) {
     const [result] = await pool.query(
-      "SELECT * FROM students WHERE StudentID = ?",
+      "SELECT s.FirstName, s.LastName, s.Age, s.Sex, s.Phone, s.Residence, e.Amount, e.Paid, e.Debit, e.DateOf, e.TypeOf, e.Observations, c.CourseName FROM students AS s INNER JOIN enrollements as e ON s.StudentID = e.StudentID INNER JOIN courses as c ON e.CourseID = c.CourseID WHERE e.StudentID = ?",
       [id],
     );
     if (result.length === 0) return null;

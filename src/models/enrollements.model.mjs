@@ -89,3 +89,54 @@ export async function createEnrollment(data) {
     connection.release();
   }
 }
+
+export async function updateEnrollement(data, id) {
+  const connection = await pool.getConnection();
+  try {
+    // Validación de datos con Zod (u otro schema validator)
+    const validData = enrollementSchrema.parse(data);
+    const {
+      FirstName,
+      LastName,
+      Age,
+      Sex,
+      Phone,
+      Residence,
+      Amount,
+      Paid,
+      CourseID,
+      Observations,
+      DateOf,
+      TypeOf,
+    } = validData;
+
+    const Debit = Amount - Paid;
+    const StudentID = id;
+
+    // Iniciar transacción usando la conexión activa
+    await connection.beginTransaction();
+
+    // Corregida la sintaxis del INSERT y paso de parámetros
+    const [studentResult] = await connection.query(
+      `UPDATE students SET FirstName = ? , LastName = ? , Age = ? , Sex = ? , Phone = ? , Residence = ? WHERE StudentID = ?`,
+      [FirstName, LastName, Age, Sex, Phone, Residence, StudentID],
+    );
+
+    // IMPORTANTE: Usar la misma 'connection' de la transacción, NO el 'pool'
+    await connection.query(
+      `UPDATE enrollements SET  CourseID = ?, Amount = ?, Paid = ?, Observations = ? , DateOf = ? , TypeOf = ? , Debit = ? WHERE StudentID = ?`,
+      [CourseID, Amount, Paid, Observations, DateOf, TypeOf, Debit, StudentID],
+    );
+
+    // Confirmar cambios
+    await connection.commit();
+    return { success: true, studentId: StudentID };
+  } catch (error) {
+    // Si algo falla, revertir los cambios de la transacción
+    await connection.rollback();
+    throw new Error(`Error al actualizar la inscripción: ${error.message}`);
+  } finally {
+    // Liberar la conexión al pool siempre
+    connection.release();
+  }
+}
